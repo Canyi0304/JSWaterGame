@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>물 붓기 게임 </title>
+    <link rel="stylesheet" href="style.css">
+    <!-- <script src="https://code.jquery.com/jquery-latest.min.js"></script> -->
+</head>
+<body>
+
+    <div class= "detail-container" id = "my">
+        <div class="dc-title">
+            <div class="dc-btn" onclick="onNext(allDataIndex-1)">이전게임</div>
+            <div class="dc-text"></div>
+            <div class="dc-btn" onclick="onNext(allDataIndex +1)">다음게임</div>
+        </div>
+        <div class="dc-main"></div>
+    </div>
+    <script src="waterGame.js"></script>
+</body>
+</html>

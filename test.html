@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>倒水游戏</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .detail-container {
+            background: #f8d288;
+            min-height: 100vh;
+        }
+
+        .dc-title {
+            text-align: center;
+            height: 40px;
+            background-color: #ce9574;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            padding: 0 10px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 11;
+        }
+
+        .dc-title .dc-btn {
+            flex: 1;
+            background-color: #f1a252;
+            font-size: 14px;
+            padding: 5px 5px;
+            color: #633200;
+        }
+
+        .dc-title .dc-text {
+            flex: 4;
+        }
+
+        .yule {
+            color: rgba(255, 255, 255, 0.9);
+            position: absolute;
+            top: 10px;
+            font-size: 14px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+
+        .dc-main {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            min-height: 100vh;
+            padding: 0px 15px 0;
+            position: relative;
+            z-index: 1;
+            justify-content: center;
+        }
+
+        .water-ls {
+            width: 25%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .water-item {
+            border: 2px solid #ce9574;
+            width: 40px;
+            height: 150px;
+            display: flex;
+            transition: transform .4s;
+            overflow: hidden;
+            border-radius: 3px 3px 20px 20px;
+            box-shadow: inset 0 1px 10px 0px #f1a252;
+        }
+
+        .water-ld {
+            display: flex;
+            flex: 1;
+            flex-direction: column-reverse;
+            transition: transform .4s;
+        }
+
+        .water-item.active {
+            transform: translateY(-50px);
+        }
+
+        .bar {
+            width: 3px;
+            position: absolute;
+            height: 180px;
+            background-color: #fff;
+            
+        }
+
+        .wi-color {
+            transition: transform .4s, height 1.4s;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="detail-container" id="my">
+        <div class="dc-title">
+            <div class="dc-btn" onclick="onNext(allDataIndex - 1)">上一关</div>
+            <div class="dc-text"></div>
+            <div class="dc-btn" onclick="onNext(allDataIndex + 1)">下一关</div>
+        </div>
+        <div class="dc-main"></div>
+    </div>
+</body>
+<script>
+    const allData = [{
+        maxCount: 3,
+        colorCount: 2,
+        emptyCount: 1
+    }, {
+        maxCount: 5,
+        colorCount: 3,
+        emptyCount: 2
+    }, {
+        maxCount: 7,
+        colorCount: 4,
+        emptyCount: 3
+    }, {
+        maxCount: 8,
+        colorCount: 5,
+        emptyCount: 3
+    }, {
+        maxCount: 9,
+        colorCount: 6,
+        emptyCount: 3
+    }, {
+        maxCount: 10,
+        colorCount: 7,
+        emptyCount: 3
+    }, {
+        maxCount: 12,
+        colorCount: 8,
+        emptyCount: 4
+    }]
+    const colorList = ['#8f1b1b', '#905019', '#ffffff', '#542943', '#366aff', '#5d581b', '#ad37b5', '#f96767', '#143a22']
+    let allDataIndex = 0
+    const dcText = document.querySelector('.dc-text')
+    const dcMain = document.querySelector('.dc-main')
+    const onNext = (index) => {
+        if (index < 0 || index >= allData.length) {
+            return
+        }
+        dcText.innerHTML = `${index + 1}/${allData.length}`
+        allDataIndex = index
+        renderHtml(allData[allDataIndex])
+    }
+    
+    const renderHtml = (rule) => {
+        dcMain.innerHTML = `<div class="bar" style="display:none"></div>
+            ${
+                Array.from(new Array(rule.maxCount)).map((v, i) => {
+                    const haveColorIndex = rule.maxCount - rule.emptyCount
+                    const arr = colorList.slice(0, rule.colorCount).sort(v => Math.random() - 0.5)
+                    let colors = []
+                    if (i < haveColorIndex) {
+                        colors = arr.map(v => ({height: 100 / rule.colorCount + '%', color: v}))
+                    }
+
+                    return `<div class="water-ls">
+                        <div class="water-item" onclick="onClick(${i})" id="m${i}">
+                            <div class="water-ld">
+                                ${
+                                    colors.map(v => {
+                                        return `<div class="wi-color" 
+                                            style="background-color:${v.color};height:${v.height}"></div>`
+                                    }).join('')
+                                }
+                            </div>
+                        </div>
+                    </div>`
+                }).join('')
+            }
+        `
+    }
+    const onClick = (index) => {
+        const activeIndex = [...document.querySelectorAll('.water-item')].findIndex(v => v.className.indexOf('active') >= 0)
+        const currColorsItem = dcMain.querySelector(`#m${index} .water-ld`)
+        const activeColorsItem = dcMain.querySelector(`#m${activeIndex} .water-ld`)
+        
+        if (activeColorsItem && index !== activeIndex) {
+            const activeColorLength = activeColorsItem.children.length
+            const currColorLength = currColorsItem.children.length
+            
+            if (activeColorLength === 0) {
+                dcMain.querySelector(`#m${activeIndex}`).classList.remove('active')
+                return alert('空瓶子无法再倒水了')
+            }
+            if (currColorLength && activeColorLength) {
+                if (activeColorsItem.children[activeColorLength - 1].style.backgroundColor !== currColorsItem.children[currColorLength - 1].style.backgroundColor) {
+                    return alert('只有相同颜色才可以倒入')
+                }
+                if (currColorsItem.children.length >= allData[allDataIndex].colorCount) {
+                    return alert('该瓶子水位已满')
+                }
+            }
+        }
+        const activeEl = dcMain.querySelector(`#m${activeIndex}`)
+        const currEl = dcMain.querySelector(`#m${index}`)
+        if (activeIndex === index) {
+            activeEl.classList.remove('active')
+        } else if (activeIndex === -1) {
+            currEl.classList.add('active')
+        } else {
+            let r1 = currEl.getBoundingClientRect()
+            let r2 = activeEl.getBoundingClientRect()
+            let x = 0
+            let y = 0
+            let rotate = ''
+            if (r1.left < r2.left) {
+                rotate = '-90'
+                x = r1.height - (r1.top - r2.top - 30) + 'px'
+                y = (r1.left - r2.left + r1.height / 2 - 2) + 'px'
+            } else {
+                rotate = '90'
+                x = -(r1.height - (r1.top - r2.top - 30)) + 'px'
+                y = (r2.left - r1.left + r1.height / 2 - 3) + 'px'
+            }
+            // 举杯移动
+            activeEl.setAttribute('style', `transform: rotate(${rotate}deg) translate(${x}, ${y});`)
+            activeEl.querySelector('.water-ld').setAttribute('style', `transform: rotate(${-rotate}deg) scale(5, 0.25)`)
+            const activeColors = [...activeColorsItem.children].map(v => v.style.backgroundColor)
+            
+            // 检测有没有并行色，计算数量
+            const forCount = activeColors.reverse().reduce((sum, v, i, arr) => {
+                if (arr[i-1] && v === arr[i-1]) {
+                    return sum + 1
+                }
+                return sum
+            }, 1)
+            
+            // active水量减少，curr水量增多
+            const colorElAll = activeEl.querySelectorAll('.wi-color')
+            for (let i = 0; i < forCount; i++) {
+                const colorIndex = activeColors.length - (1 + i)
+                colorElAll[colorIndex].style.height = 0
+                currEl.querySelector('.water-ld').appendChild(colorElAll[colorIndex].cloneNode())
+                colorElAll[colorIndex].ontransitionend = () => {
+                    colorElAll[colorIndex].parentNode.removeChild(colorElAll[colorIndex])
+                }
+                
+            }
+            
+            const barEl = dcMain.querySelector('.bar')
+            const currColors = [...currColorsItem.children].map(v => v.style.backgroundColor)
+            // 水柱400ms后出现
+            setTimeout(k => {
+                let top = r1.top - 37
+                let left = r1.left + r1.width / 2
+                const currColorElAll = currEl.querySelectorAll('.wi-color')
+                
+                
+                for (let i = 0; i < forCount; i++) {
+                    const colorIndex = currColors.length - (1 + i)
+                    currColorElAll[colorIndex].style.height = 100 / allData[allDataIndex].colorCount + '%'
+                }
+                barEl.setAttribute('style', `display:block;left:${left}px;top:${top}px;background-color:${currColors[currColors.length - 1]}`) 
+            }, 400)
+            setTimeout(k => {
+                activeEl.setAttribute('style', ``)
+                activeEl.classList.remove('active')
+                activeEl.querySelector('.water-ld').removeAttribute('style')
+                
+                barEl.style.display = 'none'
+                let isOk = [...dcMain.querySelectorAll('.water-ld')].every(v => {
+                    const colors = [...v.children].map(v => v.style.backgroundColor)
+                    
+                    if (v.children[0] && 100 / parseFloat(v.children[0].style.height) !== v.children.length) {
+                        return false
+                    }
+
+                    return colors.every((k, i) => {
+                        return !colors[i-1] || k === colors[i-1]
+                    })
+                })
+                if (isOk) {
+                    onNext(allDataIndex + 1)
+                }
+            }, 1400)
+        }
+    }
+    
+    onNext(0)
+</script>
+</html>

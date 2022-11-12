@@ -1,0 +1,102 @@
+*{
+    box-sizing: border-box;
+}
+/* 배경 꽉 채우기 */
+body{
+    margin: 0;
+}
+
+/* 배경*/
+.detail-container{
+    
+    /* background: linear-gradient(to right, rgb(#8360c3),rgb(#2ebf91)); */
+    background: linear-gradient(to right,#2ebf91, #8360c3);
+    min-height: 100vh;
+}
+
+/*이전게임 다음게임 css*/
+.dc-title .dc-btn{
+    background-color: #f1a252;
+    flex: 1;
+    font-size: 20px;
+    padding: 5px 5px;
+    color:black
+}
+
+/*이전게임 다음게임 css 넓이간격*/
+.dc-title .dc-text{
+    flex: 4;
+}
+
+/*이전게임 다음게임 배경및 위치*/
+.dc-title{
+    text-align: center;
+    height: 50px;
+    background: linear-gradient(to right,#2ebf91, #8360c3);
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 0px 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 11;
+}
+
+
+/*물병 디자인 css*/
+.water-item {
+    border: 2px solid #ce9574;
+    width: 40px;
+    height: 150px;
+    display: flex;
+    transition: transform .4s;
+    overflow: hidden;
+    border-radius: 3px 3px 20px 20px;
+    box-shadow: inset 0 1px 10px 0px #f1a252;
+}
+
+/*물병 위치 css*/
+.dc-main {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    min-height: 100vh;
+    padding: 0px 15px 0;
+    position: relative;
+    z-index: 1;
+    justify-content: center;
+}
+
+/*물병 간격 css*/
+.water-ls {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+}
+
+/*물병안에 물 css*/
+.water-ld {
+    display: flex;
+    flex: 1;
+    flex-direction: column-reverse;
+    transition: transform .5s;
+}
+
+/* .bar {
+    width: 3px;
+    position: absolute;
+    height: 180px;
+    background-color: #fff;   
+} */
+
+
+
+
+
+
+
+
+
+
