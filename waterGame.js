@@ -6,6 +6,8 @@ const allData = [
     {maxCount : 3 , colorCount : 2, emptyCount : 1},
     {maxCount : 5 , colorCount : 3, emptyCount : 2},
     {maxCount : 7 , colorCount : 4, emptyCount : 3},
+    {maxCount : 9 , colorCount : 5, emptyCount : 4},
+    {maxCount : 11 , colorCount : 6, emptyCount : 5},
 ]
 
 
@@ -24,7 +26,7 @@ const onNext = (index) =>{
     else if (index >= allData.length){
         alert ("다음 게임이 없습니다.");
     }
-    dcText.innerHTML = `${index + 1}/${allData.length}`;
+    dcText.innerHTML = `Level ${index + 1}/ Total ${allData.length}`;
     allDataIndex = index;
     renderHtml(allData[allDataIndex]);
 }
@@ -33,9 +35,9 @@ const onNext = (index) =>{
 const renderHtml = (rule) => {
     dcMain.innerHTML = `<div class="bar" style="display:none"></div>
         ${
-            Array.from(new Array(rule.maxCount)).map((v, i) => {
+            Array.from(new Array(rule.maxCount)).map((v,i) => {
                 const haveColorIndex = rule.maxCount - rule.emptyCount
-                const arr = colorList.slice(0, rule.colorCount).sort(v => Math.random() - 0.5)
+                const arr = colorList.slice(0, rule.colorCount).sort(v => Math.random() - 0.)
                 let colors = []
                 if (i < haveColorIndex) {
                     colors = arr.map(v => ({height: 100 / rule.colorCount + '%', color: v}))
@@ -119,7 +121,7 @@ const onClick = (index) => {
         
         const activeColors = [...activeColorsItem.children].map(v => v.style.backgroundColor);
         
-        //같은 색 이 겹칠 경우 count, 
+        //똑같은 색의 물이 닿았는지 확인하고 count한다.
         const forCount = activeColors.reverse().reduce((sum,v,i,arr) => {
             if (arr[i-1] && v === arr[i-1]) {
                 return sum+1;
@@ -127,7 +129,7 @@ const onClick = (index) => {
             return sum;
         },1)
 
-        //물병에 물을 부을때 물이 없어지는 이벤트
+        //active에 있는 물은 감소하고, curr에 있는 물은 증가한다.
         const colorElAll = activeEl.querySelectorAll('.wi-color');
         for(let i=0; i<forCount; i++){
             const colorIndex = activeColors.length - (i+1);
@@ -138,21 +140,24 @@ const onClick = (index) => {
                 colorEl.parentNode.removeChild(colorEl);
             }
     }
-        //물 받은 물병에 물 생성하기 
+        //물 받은 물병에 bar 위치 조절, 400ms이후 생성
         const barEl = dcMain.querySelector('.bar');
         const currColors = [...currColorsItem.children].map(v=>v.style.backgroundColor)
         setTimeout(()=>{
             let top = r1.top - 37;
-            let left = r1.left + r1.width / 2
+            let left = r1.left + r1.width /2
             const currColorElAll = currEl.querySelectorAll('.wi-color');
 
-            //물 위치 올라가기 및 속도 조절
+            //bar 속도 조절
             for(let i =0; i < forCount; i++){
                 const colorIndex = currColors.length - (i+1);
                 currColorElAll[colorIndex].style.height = 100 / allData[allDataIndex].colorCount + '%';
             }
-            barEl.setAttribute('style', `display:block;left:${left}px;top:${top}px;background-color:${currColors[currColors.length - 1]}`)
+            barEl.setAttribute('style', 
+                                `display:block;left:${left}px;top:${top}px;background-color:${currColors[currColors.length - 1]}`)
         },400);
+        
+        
         
         //물 부은 다음 원래 위치로 돌려놓기
         setTimeout(()=>{
@@ -162,7 +167,7 @@ const onClick = (index) => {
             
             barEl.style.display = 'none'
 
-        //통관여부 체크
+        // //통관여부 체크
         
         let isOK = [...dcMain.querySelectorAll('.water-ld')].every(v=>{
         const colors = [...v.children].map(v=> v.style.backgroundColor);
@@ -173,6 +178,7 @@ const onClick = (index) => {
                 return !colors[i-1] || k === colors[i-1];
             });
         });
+        
             
         if (isOK) {
             onNext(allDataIndex+1);

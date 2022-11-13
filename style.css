@@ -98,6 +98,7 @@ body{
     z-index: 1;
 }
 
+/*물 부을때 bar 설정*/
 .bar {
     width: 3px;
     position: absolute;
