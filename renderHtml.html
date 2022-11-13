@@ -1,0 +1,29 @@
+const renderHtml = (rule) => {
+    
+    //
+    dcMain.innerHTML = `<div class="bar" style="display:none"></div>
+    ${
+        Array.from(new Array(rule.maxCount)).map((v,i) =>{
+            const haveColorIndex = rule.maxCount  - rule.emptyCount;
+            const arr = colorList.slice(0, rule.colorCount).sort(v => Math.random()-0.5);
+            let colors = [];
+            if(i<haveColorIndex){
+                colors = arr.map(v=>({height: 100 / rule.colorCount + '%', color:v}));
+            }
+            return `<div class="water-ls">
+                        <div class = "water-item" onclick="onClick(${i})" id = "m${i}">
+                            <div class = "water-ld">
+                                ${
+                                    colors.map(v=>{
+                                        return `<div class "wi-color" 
+                                                style = "background-color:${v.color}; height:${v.height}"></div>`
+                                    }).join('')
+                                }
+                            </div>
+                        </div>
+                    </div>`
+        }).join('')
+    }
+
+    `
+}
